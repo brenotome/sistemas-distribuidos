@@ -33,4 +33,4 @@ DRE: 113026430
 
 ### detalhes de implementação 
 - O tratamento dos erros será feito através de excessões 
-- A contagem será feita pela classe Counter
+- A contagem será feita pela classe [Counter](https://docs.python.org/3/library/collections.html#counter-objects)
