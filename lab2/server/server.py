@@ -7,14 +7,13 @@ from collections import Counter
 
 def iteractive_server():
     """
-    implementa a comunicação com o client, 
-    e trata as exceções
+    implementa a comunicação com o client
     """
     HOST = ''
     PORT = 5000
     with socket.socket() as sock:
         print("Iniciando servidor de contagem de palavras")
-        sock.bind((HOST,PORT))
+        sock.bind((HOST, PORT))
         sock.listen(1)
         while True:
             new_sock, address = sock.accept()
@@ -24,13 +23,14 @@ def iteractive_server():
                 try:
                     response = process(str(msg, encoding='utf-8'))
                 except Exception as e:
-                    response = {'error':str(e)}
-                #codifica a resposta em json e utf-8
-                encoded_response = bytes(json.dumps(response, ensure_ascii=False), encoding='utf-8') 
+                    response = {'error': str(e)}
+                # codifica a resposta em json e utf-8
+                encoded_response = bytes(json.dumps(
+                    response, ensure_ascii=False), encoding='utf-8')
                 new_sock.send(encoded_response)
 
 
-def process(filename:str):
+def process(filename: str):
     """
     requisita da camada de acesso a dados o texto do arquivo,
     divide o texto em palavras
@@ -38,13 +38,13 @@ def process(filename:str):
     e suas frequências como valores 
     """
     text = data_acess(filename)
-    #remove pontuação
-    text = text.translate(str.maketrans('','',string.punctuation))
+    # remove pontuação
+    text = text.translate(str.maketrans('', '', string.punctuation))
     words = text.split()
     return dict(Counter(words).most_common(10))
 
 
-def data_acess(filename:str):
+def data_acess(filename: str):
     """
     implementa camada de acesso aos dados,
     abre arquivo e retorna seu conteúdo, 
