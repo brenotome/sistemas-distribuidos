@@ -7,28 +7,44 @@ import sys
 import select
 import threading
 
+# globals
 connections = dict()
 lock = threading.Lock()
 
-def connect_socket(sock):
+
+def socket_handler(sock):
+    '''
+    Aceita conexão e cria uma thread para atender a um client
+    '''
     new_sock, address = sock.accept()
     client = threading.Thread(target=answer_requests, args=(new_sock, address))
     client.start()
 
 
-def process_cli(_):
+def cli_handler(_):
+    '''
+    Trata comandos vindos pelo stdin,
+    só encerra o programa quando não tem nenhuma conexão ativa
+    '''
     cmd = input()
     if cmd == 'fim':
-        if not connections:
-            print("Tchau :)")
-            sys.exit()
-        else:
-            print("Existem conexões ativas")
+        close_server()
     else:
         print('Comando inválido, o único comando válido é "fim"')
 
 
+def close_server():
+    if not connections:
+        print("Tchau :)")
+        sys.exit()
+    else:
+        print("Existem conexões ativas")
+
+
 def server():
+    '''
+    inicia o servidor
+    '''
     HOST = ''
     PORT = 5000
     with socket.socket() as sock:
@@ -37,9 +53,10 @@ def server():
         sock.listen(10)
         sock.setblocking(False)
 
+        # armazena as funções que tratam cada tipo de entrada
         entrypoints = {
-            sys.stdin: process_cli,
-            sock: connect_socket
+            sys.stdin: cli_handler,
+            sock: socket_handler
         }
 
         while True:
@@ -47,21 +64,28 @@ def server():
 
 
 def listen_entrypoints(entrypoints):
+    '''
+    Escuta as entradas e chama o handler adequado para cada tipo de entrada
+    '''
     read, _, _ = select.select(entrypoints.keys(), [], [])
     for ready in read:
         entrypoints[ready](ready)
 
 
 def answer_requests(new_sock, address):
+    '''
+    Responde as requisições dos clients
+    '''
     with new_sock:
         with lock:
             connections[new_sock] = address
         print(f'conectado com: {address}')
+
         while True:
             msg = new_sock.recv(1024)
             if not msg:
                 with lock:
-                    del connections[new_sock] 
+                    del connections[new_sock]
                 break
             try:
                 response = process(str(msg, encoding='utf-8'))
