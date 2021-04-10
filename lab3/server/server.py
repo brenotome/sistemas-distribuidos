@@ -1,24 +1,29 @@
 import json
 import os
+import select
 import socket
 import string
-from collections import Counter
 import sys
-import select
 import threading
+from collections import Counter
 
 # globals
+
 connections = dict()
 lock = threading.Lock()
+# salva lista de threads ativas
+clients = list()
 
 
 def socket_handler(sock):
     '''
-    Aceita conexão e cria uma thread para atender a um client
+    Aceita conexão, cria uma thread para atender a um client
+    e salva a referência
     '''
     new_sock, address = sock.accept()
     client = threading.Thread(target=answer_requests, args=(new_sock, address))
     client.start()
+    clients.append(client)
 
 
 def cli_handler(_):
@@ -34,11 +39,14 @@ def cli_handler(_):
 
 
 def close_server():
-    if not connections:
-        print("Tchau :)")
-        sys.exit()
-    else:
-        print("Existem conexões ativas")
+    '''
+    Aguarda finalização das threads e encerra a execução 
+    '''
+    print("Aguardando a finalização dos clients ativos, novas conexões não serão aceitas")
+    for client in clients:
+        client.join()
+    print("Tchau :)")
+    sys.exit()
 
 
 def server():
