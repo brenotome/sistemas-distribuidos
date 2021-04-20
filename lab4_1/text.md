@@ -62,13 +62,13 @@ requisições:
 ```json
 {
     "comando" : "pm",
-    "params" : ['alvo']
+    "params" : ["alvo"]
 }
 ```
 ```json
 {
     "comando" : "channel",
-    "params" : ['create', 'canal_1']
+    "params" : ["create", "canal_1"]
 }
 ```
 - sintaxe de resposta - vamos usar os mesmos códigos do protocolo http
