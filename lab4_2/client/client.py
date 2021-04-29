@@ -4,8 +4,8 @@ import sys
 import threading
 
 HOST = ''
-PORT = 5000
-RECV_SIZE = 1024
+PORT = 5001
+RECV_SIZE = 2048
 
 
 def start_client():
@@ -39,7 +39,7 @@ def choose_name(sock):
 
 
 def validate_name(sock, name):
-    response = request(sock, {"commando": "name", "params": [name]})
+    response = request(sock, {"comando": "name", "params": [name]})
     if response['status_code'] == 200:
         return name
     else:
@@ -52,6 +52,7 @@ def request(sock, payload):
         payload, ensure_ascii=False), encoding='utf-8')
     sock.sendall(encoded_msg)
     response_raw = sock.recv(RECV_SIZE)
+    print(response_raw)
     return json.loads(str(response_raw, encoding='utf-8'))
 
 
