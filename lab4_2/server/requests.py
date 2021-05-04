@@ -1,5 +1,4 @@
 import json
-import sys
 RECV_SIZE = 2048
 
 
@@ -16,6 +15,4 @@ def send_json(sock, payload):
 
 def recv_json(sock):
     response_raw = sock.recv(RECV_SIZE)
-    if not response_raw:
-        sys.exit()
     return json.loads(str(response_raw, encoding='utf-8'))

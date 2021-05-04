@@ -6,7 +6,7 @@ import string
 import sys
 import threading
 from parser import parse_command
-
+from requests import send_json
 from data import User
 from handlers import cli_handler
 
@@ -78,12 +78,8 @@ def answer_requests(new_sock):
     except Exception as e:
         print(f"DEBUG {e}")
         response = {'status_code': 400, 'error': str(e)}
-
-    # codifica a resposta em json e utf-8
-    encoded_response = bytes(json.dumps(
-        response, ensure_ascii=False), encoding='utf-8')
-    new_sock.send(encoded_response)
-
+    if response:
+        send_json(new_sock, response)
 
 if(__name__ == '__main__'):
     server()

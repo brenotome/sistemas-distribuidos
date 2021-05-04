@@ -31,7 +31,7 @@ def start_client():
     > channel delete name : apaga um canal
     > channel sub name : se inscreve em um canal
     > channel unsub name : se desinscreve de um canal"
-    > exit : saí da aplicação
+    > fim : saí da aplicação
         """
         )
         entrypoints[sock] = listen_messages
