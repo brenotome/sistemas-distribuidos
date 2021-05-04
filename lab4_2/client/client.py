@@ -2,10 +2,16 @@ import json
 import socket
 import sys
 import threading
+from handlers import cli_handler, listen_messages
+from requests import request
+import select
 
 HOST = ''
 PORT = 5001
-RECV_SIZE = 2048
+
+entrypoints = {
+    sys.stdin: cli_handler,
+}
 
 
 def start_client():
@@ -28,6 +34,20 @@ def start_client():
     > exit : saí da aplicação
         """
         )
+        entrypoints[sock] = listen_messages
+
+        while True:
+            listen_entrypoints(entrypoints, sock)
+
+
+
+def listen_entrypoints(entrypoints, sock):
+    '''
+    Escuta as entradas e chama o handler adequado para cada tipo de entrada
+    '''
+    read, _, _ = select.select(entrypoints.keys(), [], [])
+    for ready in read:
+        entrypoints[ready](sock)
 
 
 def choose_name(sock):
@@ -45,15 +65,6 @@ def validate_name(sock, name):
     else:
         print(response['error'])
         return False
-
-
-def request(sock, payload):
-    encoded_msg = bytes(json.dumps(
-        payload, ensure_ascii=False), encoding='utf-8')
-    sock.sendall(encoded_msg)
-    response_raw = sock.recv(RECV_SIZE)
-    print(response_raw)
-    return json.loads(str(response_raw, encoding='utf-8'))
 
 
 if(__name__ == '__main__'):

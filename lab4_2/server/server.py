@@ -5,8 +5,9 @@ import socket
 import string
 import sys
 import threading
-from data import User
 from parser import parse_command
+
+from data import User
 from handlers import cli_handler
 
 users = dict()
@@ -16,6 +17,7 @@ lock = threading.Lock()
 entrypoints = {
     sys.stdin: cli_handler,
 }
+
 
 def accept_connection(sock):
     '''
@@ -41,7 +43,7 @@ def server():
         sock.setblocking(False)
 
         # armazena as funções que tratam cada tipo de entrada
-        entrypoints[sock]= accept_connection
+        entrypoints[sock] = accept_connection
 
         while True:
             listen_entrypoints(entrypoints)
@@ -69,9 +71,13 @@ def answer_requests(new_sock):
         return
     try:
         handler, params = parse_command(msg)
-        response = handler(params, users=users,sock=new_sock)
+        response = handler(params, users=users, sock=new_sock)
+    except KeyError as e:
+        print(f"DEBUG {e}")
+        response = {'status_code': 400, 'error': 'Comando não encontrado'}
     except Exception as e:
-        response = {'status_code':400,'error': str(e)}
+        print(f"DEBUG {e}")
+        response = {'status_code': 400, 'error': str(e)}
 
     # codifica a resposta em json e utf-8
     encoded_response = bytes(json.dumps(

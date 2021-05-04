@@ -14,6 +14,21 @@ def name_handler(params:list, users, sock):
     else:
         users[sock].name = name
         return {"status_code":200}
+    
+def list_handler(params: list, users, sock):
+    if len(params) != 0:
+        raise ValueError("List não recebe nenhum parametro")
+    #somente lista ativos e não lista a sí mesmo
+    active_users = [u.name for u in users.values() if u.active and u.sock_conn != sock]
+    if len(active_users) == 0:
+        return {
+            "status_code": 200,
+            "message": "Não tem ninguem aqui :/"
+            }
+    return {
+        "status_code": 200,
+        "message": '\n'.join(active_users)
+        }
 
 def cli_handler(_):
     '''
