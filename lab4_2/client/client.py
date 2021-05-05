@@ -26,11 +26,11 @@ def start_client():
     > active : marca o usuário como ativo
     > inactive : marca o usuário como inativo
     > pm user_name message : envia mensagem para usuário
-    > pm channel_name message : envia mensagem para o canal
-    > channel create name : cria um canal
-    > channel delete name : apaga um canal
-    > channel sub name : se inscreve em um canal
-    > channel unsub name : se desinscreve de um canal"
+    > pm #channel_name message : envia mensagem para o canal
+    > create name : cria um canal
+    > delete name : apaga um canal
+    > sub name : se inscreve em um canal
+    > unsub name : se desinscreve de um canal"
     > fim : saí da aplicação
         """
         )

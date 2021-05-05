@@ -7,10 +7,11 @@ import sys
 import threading
 from parser import parse_command
 from requests import send_json
-from data import User
+from data import User, Channel
 from handlers import cli_handler
 
 users = dict()
+channels = dict()
 lock = threading.Lock()
 
 
@@ -71,7 +72,7 @@ def answer_requests(new_sock):
         return
     try:
         handler, params = parse_command(msg)
-        response = handler(params, users=users, sock=new_sock)
+        response = handler(params, users=users, channels=channels, sock=new_sock)
     except KeyError as e:
         print(f"DEBUG {e}")
         response = {'status_code': 400, 'error': 'Comando não encontrado'}

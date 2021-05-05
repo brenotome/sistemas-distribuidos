@@ -19,3 +19,7 @@ def recv_json(sock):
     if not response_raw:
         sys.exit()
     return json.loads(str(response_raw, encoding='utf-8'))
+
+def broadcast(payload, targets):
+    for target in targets:
+        send_json(target, payload)
