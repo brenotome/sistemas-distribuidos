@@ -17,10 +17,12 @@ def listen_messages(sock):
     message = recv_json(sock)
 
     if message['status_code'] == 200:
+        #mensagens diretas são verdes
         if 'sender' in message.keys():
             print(f"{Fore.GREEN}de {message['sender']}:")
         print(message['message']+Fore.RESET)
     else:
+        #erros são vermelhos
         print(Fore.RED + message['error'] + Fore.RESET)
         return False
 
