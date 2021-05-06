@@ -20,6 +20,8 @@ def listen_messages(sock):
         #mensagens diretas são verdes
         if 'sender' in message.keys():
             print(f"{Fore.GREEN}de {message['sender']}:")
+        else:
+            print(Fore.BLUE, end='')
         print(message['message']+Fore.RESET)
     else:
         #erros são vermelhos
