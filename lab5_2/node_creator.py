@@ -109,7 +109,7 @@ class ChordNode(rpyc.Service):
 
     def closest_preciding_node(self, identifier):
         for i in reversed(self.finger):
-            if self.is_between(hash_func(i[1], 2**M), self.identifier, identifier):# (i[0] > self.identifier) or (i[0]<identifier):
+            if self.is_between(hash_func(i[1], 2**M), self.identifier, identifier):
                 return rpyc.connect(*i[1].split(':')) #retorna conexão rpc
         return rpyc.connect('localhost',self.port)
 
