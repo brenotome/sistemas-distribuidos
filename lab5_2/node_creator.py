@@ -28,6 +28,7 @@ def create_nodes():
         p.start()
         nodes.append({"identifier":identifier, "address":f'{ip}:{port_range[i]}'})
 
+    print("Nós iniciados, use CTRL+C para parar todos os processos e sair do programa")
     server = ThreadedServer(Server, port=5000)
     server.start()
 
@@ -59,7 +60,7 @@ def build_finger(identifier: int):
 
 def node(port: int, identifier: str, finger: list):
     '''inicia serviço rcp para cada nó'''
-    service = classpartial(ChordNode, port, identifier, finger)
+    service = classpartial(ChordNode, port, identifier, finger) #realiza operação de bind para inserir informações especificas de cada nó
     server = ThreadedServer(service, port=port)
     server.start()
 
@@ -67,7 +68,7 @@ def node(port: int, identifier: str, finger: list):
 class ChordNode(rpyc.Service):
     '''classe que implementa as operações dos nós do chord'''
 
-    def __init__(self, port: int, identifier: int, finger) -> None:
+    def __init__(self, port: int, identifier: int, finger):
         '''configura cada nó'''
         self.port = port
         self.finger = finger
